@@ -12,6 +12,14 @@ function WardleyMap({ data }) {
     background: 'white',
   };
 
+  // Mapping evolution stages to X-axis positions
+  const evolutionMapping = {
+    genesis: 0,
+    custom: 25,
+    product: 50,
+    commodity: 75,
+  };
+
   const axisStyle = {
     position: 'absolute',
     backgroundColor: 'black',
@@ -62,10 +70,9 @@ function WardleyMap({ data }) {
           key={index}
           style={{
             position: 'absolute',
-            left: '40px',
             bottom: '20px',
             width: 'calc(25% - 10px)', // Adjust width to fit four sections
-            height: '100%',
+            height: '95%',
             backgroundColor: section.color,
             left: section.position, // Position each bar correctly
             zIndex: 0, // Ensure background bars are at the back
@@ -87,35 +94,43 @@ function WardleyMap({ data }) {
         </div>
       ))}
 
-      {data.map((item, index) => (
-        <Draggable key={index} bounds="parent" defaultPosition={{ x: 100 + index * 50, y: 100 + index * 30 }}>
-          <div
-            style={nodeStyle}
-            onMouseEnter={() => setHoveredItem(item)}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <div style={{
-              ...labelStyle,
-              top: '15px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              whiteSpace: 'nowrap',
-            }}>
-              {trimText(item.name)}
-            </div>
-            {hoveredItem === item && (
+      {data.map((item, index) => {
+        // Calculate X position based on evolution stage and scale
+        const xPosition = `${evolutionMapping[item.evolution.toLowerCase()] + (item.scale * 25)}%`; // Adjust position based on evolution stage and scale
+
+        // Calculate Y position (fixed or based on some logic)
+        const yPosition = '10%'; // Example fixed position for y-axis
+
+        return (
+          <Draggable key={index} bounds="parent" defaultPosition={{ x: xPosition, y: 100 + index * 30 }}>
+            <div
+              style={nodeStyle}
+              onMouseEnter={() => setHoveredItem(item)}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
               <div style={{
-                ...tooltipStyle,
-                top: '30px',
+                ...labelStyle,
+                top: '15px',
                 left: '50%',
                 transform: 'translateX(-50%)',
+                whiteSpace: 'nowrap',
               }}>
-                {item.name}
+                {trimText(item.name)}
               </div>
-            )}
-          </div>
-        </Draggable>
-      ))}
+              {hoveredItem === item && (
+                <div style={{
+                  ...tooltipStyle,
+                  top: '30px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                }}>
+                  {item.name}
+                </div>
+              )}
+            </div>
+          </Draggable>
+        );
+      })}
     </div>
   );
 }
