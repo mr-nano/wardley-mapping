@@ -104,7 +104,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div style={{ margin: '0 auto', maxWidth: '1200px', padding: '20px' }}>
       <h1>Wardley Map Generator</h1>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <APIKeyInput apiKey={apiKey} setApiKey={setApiKey} />
